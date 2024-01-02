@@ -66,7 +66,7 @@ AS_CASE([$host],
         #If we are in UCRT we do not want to set the spawnv define because it breaks the build
         IS_UCRT=`echo '#include <windows.h>'| gcc -E -dM -  | grep -i _UCRT | xargs`
         AS_IF([test "$IS_UCRT" == ""], [
-            CFLAGS="$CFLAGS -D_spawnv=spawnv"
+            CFLAGS="$CFLAGS"
         ])
     ],
 	[CFLAGS="$CFLAGS"])
