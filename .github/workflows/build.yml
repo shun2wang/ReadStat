@@ -113,11 +113,19 @@ jobs:
 
       - name: Install dependencies
         run: |
-             vcpkg install gettext
-             
-      - name: Build test
+          vcpkg install gettext libiconv libcsv libxlsxwriter zlib --triplet x64-windows
+          vcpkg integrate install
+
+      - name: Build
         run: |
-             MSBuild /nologo ./VS17/ReadStat.sln
+            MSBuild ./VS17/ReadStat.sln `
+            /p:Configuration=Release `
+            /p:Platform=x64 `
+            /p:VcpkgEnabled=true `
+            /p:VcpkgRoot="${{ env.VCPKG_ROOT }}" `
+            /p:VcpkgAutoLink=true `
+            /p:VcpkgTriplet=x64-windows `
+            /nologo
       
       - name: Test
         id: make-check
