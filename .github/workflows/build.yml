@@ -69,7 +69,7 @@ jobs:
       - name: Fail if tests failed
         if: steps.make-check.outcome == 'failure'
         run: exit 1
-  windows:
+  windows_msys:
     runs-on: windows-latest
     defaults:
       run:
