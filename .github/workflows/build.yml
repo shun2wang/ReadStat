@@ -104,3 +104,32 @@ jobs:
       - name: Fail if tests failed
         if: steps.make-check.outcome == 'failure'
         run: exit 1
+  windows_msvc:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install dependencies
+        run: |
+             vcpkg install gettext
+             
+      - name: Build test
+        run: |
+             MSBuild /nologo ./VS17/ReadStat.sln
+      
+      - name: Test
+        id: make-check
+        run: make check
+        continue-on-error: true
+      - name: Upload test log
+        if: steps.make-check.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-suite-log-windows
+          path: test-suite.log
+          retention-days: 5
+      - name: Fail if tests failed
+        if: steps.make-check.outcome == 'failure'
+        run: exit 1
