@@ -124,8 +124,8 @@ jobs:
           MSBuild ./VS17/ReadStat.sln `
             /p:Configuration=Release `
             /p:Platform=x64 `
-            /p:IncludePath="$vcpkgInclude;$(IncludePath)" `
-            /p:LibraryPath="$vcpkgLib;$(LibraryPath)" `
+            /p:IncludePath="$vcpkgInclude;`$(IncludePath)" `
+            /p:LibraryPath="$vcpkgLib;`$(LibraryPath)" `
             /nologo
       
       - name: Test
