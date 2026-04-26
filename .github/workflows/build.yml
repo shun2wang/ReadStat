@@ -120,12 +120,13 @@ jobs:
           $vcpkgInclude = "C:\vcpkg\installed\x64-windows\include"
           $vcpkgLib = "C:\vcpkg\installed\x64-windows\lib"
 
-          # make sure vcpkg include path is used before any other include paths
           MSBuild ./VS17/ReadStat.sln `
             /p:Configuration=Release `
             /p:Platform=x64 `
+            "/p:IncludePath=$vcpkgInclude;`$(IncludePath)" `
+            "/p:LibraryPath=$vcpkgLib;`$(LibraryPath)" `
             /nologo
-      
+            
       - name: Test
         id: make-check
         run: make check
