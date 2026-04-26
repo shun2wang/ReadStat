@@ -113,19 +113,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # use $env:VCPKG_ROOT vcpkg
-          & "$env:VCPKG_ROOT\vcpkg.exe" install gettext libiconv libcsv libxlsxwriter zlib --triplet x64-windows
+          vcpkg install gettext libiconv libcsv libxlsxwriter zlib --triplet x64-windows
 
       - name: Build
         run: |
-          $vcpkgInclude = "$env:VCPKG_ROOT\installed\x64-windows\include"
-          $vcpkgLib = "$env:VCPKG_ROOT\installed\x64-windows\lib"
+          $vcpkgInclude = "C:\vcpkg\installed\x64-windows\include"
+          $vcpkgLib = "C:\vcpkg\installed\x64-windows\lib"
 
           # make sure vcpkg include path is used before any other include paths
           MSBuild ./VS17/ReadStat.sln `
             /p:Configuration=Release `
             /p:Platform=x64 `
-            /p:VcpkgEnabled=true `
             /p:IncludePath="$vcpkgInclude;$(IncludePath)" `
             /p:LibraryPath="$vcpkgLib;$(LibraryPath)" `
             /nologo
