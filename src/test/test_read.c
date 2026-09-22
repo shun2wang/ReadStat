@@ -39,8 +39,10 @@ char *file_extension(long format) {
         return "zsav";
     if (format == RT_FORMAT_POR)
         return "por";
-    if (format == RT_FORMAT_SAS7BCAT)
+    if (format == RT_FORMAT_SAS7BCAT_32BIT)
         return "sas7bcat";
+    if (format == RT_FORMAT_SAS7BCAT_64BIT)
+        return "sas7bcat64";
     if (format == RT_FORMAT_SAS7BDAT_32BIT_COMP_NONE)
         return "sas7bdat32";
     if (format == RT_FORMAT_SAS7BDAT_32BIT_COMP_ROWS)
@@ -137,7 +139,16 @@ static int handle_metadata(readstat_metadata_t *metadata, void *ctx) {
                 "Number of observations");
     }
 
-    push_error_if_strings_differ_n(rt_ctx, rt_ctx->file->label, file_label, 
+    /* The write side cuts the label to the format's limit and drops trailing
+     * blanks (readers trim them); expect the same here */
+    char expected_label[RT_MAX_STRING];
+    snprintf(expected_label, sizeof(expected_label), "%.*s",
+            (int)(rt_ctx->max_file_label_len-1), rt_ctx->file->label);
+    if ((rt_ctx->file_format & RT_FORMAT_DTA)) {
+        while (expected_label[0] && expected_label[strlen(expected_label)-1] == ' ')
+            expected_label[strlen(expected_label)-1] = '\0';
+    }
+    push_error_if_strings_differ_n(rt_ctx, expected_label, file_label,
             rt_ctx->max_file_label_len-1, "File labels");
     if (table_name == NULL || strcmp(table_name, "DATASET") != 0) {
         push_error_if_strings_differ_n(rt_ctx, rt_ctx->file->table_name, table_name, 
@@ -158,6 +169,12 @@ static int handle_metadata(readstat_metadata_t *metadata, void *ctx) {
 
 static int handle_note(int index, const char *note, void *ctx) {
     rt_parse_ctx_t *rt_ctx = (rt_parse_ctx_t *)ctx;
+    /* Stata's _dta[note0] holds the note count; it is bookkeeping, not a
+     * note, and must not be delivered. (SPSS note indices start at 0.) */
+    if (index == 0 && (rt_ctx->file_format & RT_FORMAT_DTA)) {
+        push_error_if_strings_differ(rt_ctx, NULL, note, "Note 0 (count) delivered as a note");
+        return READSTAT_HANDLER_OK;
+    }
     push_error_if_strings_differ(rt_ctx, rt_ctx->file->notes[rt_ctx->notes_count++],
             note, "Note");
 
@@ -191,6 +208,11 @@ static int handle_variable(int index, readstat_variable_t *variable,
             readstat_variable_get_name(variable),
             "Column names");
 
+    push_error_if_doubles_differ(rt_ctx,
+            readstat_type_class(column->type),
+            readstat_type_class(readstat_variable_get_type(variable)),
+            "Column type class");
+
     push_error_if_strings_differ(rt_ctx, column->label,
             readstat_variable_get_label(variable),
             "Column labels");
@@ -199,6 +221,10 @@ static int handle_variable(int index, readstat_variable_t *variable,
         push_error_if_strings_differ(rt_ctx, column->format,
                 readstat_variable_get_format(variable),
                 "Column formats");
+
+    push_error_if_strings_differ(rt_ctx, column->informat,
+            readstat_variable_get_informat(variable),
+            "Column informats");
 
     if (column->display_width)
         push_error_if_doubles_differ(rt_ctx, column->display_width,
@@ -260,14 +286,21 @@ static int handle_value(int obs_index, readstat_variable_t *variable, readstat_v
 
     rt_column_t *column = &rt_ctx->file->columns[rt_ctx->var_index];
 
-    if (column->type == READSTAT_TYPE_STRING_REF) {
-        push_error_if_strings_differ(rt_ctx,
-                rt_ctx->file->string_refs[readstat_int32_value(column->values[file_obs_index])],
-                readstat_string_value(value), "String ref values");
-    } else {
-        push_error_if_values_differ(rt_ctx, 
-                column->values[file_obs_index],
-                value, "Data values");
+    if (!column->skip_value_comparison) {
+        if (column->type == READSTAT_TYPE_STRING_REF) {
+            /* A missing value is written as the empty string reference and
+             * read back as NULL or "" */
+            readstat_value_t expected = column->values[file_obs_index];
+            const char *expected_string = NULL;
+            if (!readstat_value_is_system_missing(expected))
+                expected_string = rt_ctx->file->string_refs[readstat_int32_value(expected)];
+            push_error_if_strings_differ(rt_ctx, expected_string,
+                    readstat_string_value(value), "String ref values");
+        } else {
+            push_error_if_values_differ(rt_ctx,
+                    column->values[file_obs_index],
+                    value, "Data values");
+        }
     }
 
     return READSTAT_HANDLER_OK;
