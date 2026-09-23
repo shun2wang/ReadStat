@@ -69,7 +69,7 @@ jobs:
       - name: Fail if tests failed
         if: steps.make-check.outcome == 'failure'
         run: exit 1
-  windows:
+  windows_msys:
     runs-on: windows-latest
     defaults:
       run:
@@ -97,6 +97,38 @@ jobs:
       - name: Upload test log
         if: steps.make-check.outcome == 'failure'
         uses: actions/upload-artifact@v7
+        with:
+          name: test-suite-log-windows
+          path: test-suite.log
+          retention-days: 5
+      - name: Fail if tests failed
+        if: steps.make-check.outcome == 'failure'
+        run: exit 1
+  windows_msvc:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install dependencies
+        run: |
+          vcpkg install gettext libiconv libcsv libxlsxwriter zlib --triplet x64-windows
+
+      - name: Build
+        run: MSBuild ./VS17/ReadStat.sln /p:Configuration=Release /p:Platform=x64 /nologo
+        env:
+          INCLUDE: C:\vcpkg\installed\x64-windows\include;${{ env.INCLUDE }}
+          LIB: C:\vcpkg\installed\x64-windows\lib;${{ env.LIB }}
+            
+            
+      - name: Test
+        id: make-check
+        run: make check
+        continue-on-error: true
+      - name: Upload test log
+        if: steps.make-check.outcome == 'failure'
+        uses: actions/upload-artifact@v4
         with:
           name: test-suite-log-windows
           path: test-suite.log
