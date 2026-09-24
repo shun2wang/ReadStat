@@ -116,10 +116,9 @@ jobs:
           vcpkg install gettext libiconv libcsv libxlsxwriter zlib --triplet x64-windows
 
       - name: Build
-        run: MSBuild ./VS17/ReadStat.sln /p:Configuration=Release /p:Platform=x64 /nologo
-        env:
-          INCLUDE: C:\vcpkg\installed\x64-windows\include;${{ env.INCLUDE }}
-          LIB: C:\vcpkg\installed\x64-windows\lib;${{ env.LIB }}
+        run: |
+          $env:INCLUDE = "C:\vcpkg\installed\x64-windows\include;$env:INCLUDE"
+          MSBuild ./VS17/ReadStat.sln /p:Configuration=Release /p:Platform=x64 /nologo
             
             
       - name: Test
