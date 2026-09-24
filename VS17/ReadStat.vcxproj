@@ -105,7 +105,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\iconv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VcpkgRoot)\installed\$(VcpkgTriplet)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ObjectFileName>$(IntDir)FakePath\%(RelativeDir)</ObjectFileName>
       <AssemblerListingLocation>$(IntDir)FakePath\%(RelativeDir)\</AssemblerListingLocation>
     </ClCompile>
@@ -124,7 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\iconv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VcpkgRoot)\installed\$(VcpkgTriplet)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ObjectFileName>$(IntDir)FakePath\%(RelativeDir)</ObjectFileName>
       <AssemblerListingLocation>$(IntDir)FakePath\%(RelativeDir)\</AssemblerListingLocation>
     </ClCompile>
@@ -150,7 +150,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\iconv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VcpkgRoot)\installed\$(VcpkgTriplet)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ObjectFileName>$(IntDir)FakePath\%(RelativeDir)</ObjectFileName>
       <AssemblerListingLocation>$(IntDir)FakePath\%(RelativeDir)\</AssemblerListingLocation>
     </ClCompile>
@@ -173,7 +173,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\iconv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VcpkgRoot)\installed\$(VcpkgTriplet)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ObjectFileName>$(IntDir)FakePath\%(RelativeDir)</ObjectFileName>
       <AssemblerListingLocation>$(IntDir)FakePath\%(RelativeDir)\</AssemblerListingLocation>
     </ClCompile>
