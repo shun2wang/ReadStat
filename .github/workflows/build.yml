@@ -124,6 +124,19 @@ jobs:
           vcpkg install gettext libiconv libcsv libxlsxwriter zlib --triplet x64-windows
           vcpkg integrate install
 
+      - name: Fix library filename and paths for MSVC
+        shell: pwsh
+        run: |
+          $libDir = "C:\vcpkg\installed\x64-windows\lib"
+          
+          if (Test-Path "$libDir\iconv.lib") {
+              Copy-Item "$libDir\iconv.lib" "$libDir\libiconv.lib" -Force
+          }
+          
+          if (Test-Path "$libDir\zlib.lib") {
+              Write-Host "Zlib found at vcpkg path."
+          }
+
       - name: Build
         run: |
           MSBuild ./VS17/ReadStat.sln /p:Configuration=Release /p:Platform=x64 /nologo
