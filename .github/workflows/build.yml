@@ -111,15 +111,23 @@ jobs:
       
       - uses: ilammy/msvc-dev-cmd@v1
 
+      - name: Cache vcpkg binary cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/vcpkg-binary-cache
+          key: vcpkg-binary-cache-${{ runner.os }}-${{ hashFiles('.github/workflows/*.yml') }}
+          restore-keys: |
+            vcpkg-binary-cache-${{ runner.os }}-
+
       - name: Install dependencies
         run: |
-          vcpkg integrate install gettext libiconv libcsv libxlsxwriter zlib --triplet x64-windows
+          vcpkg install gettext libiconv libcsv libxlsxwriter zlib --triplet x64-windows
+          vcpkg integrate install
 
       - name: Build
         run: |
           MSBuild ./VS17/ReadStat.sln /p:Configuration=Release /p:Platform=x64 /nologo
-            
-            
+     
       - name: Test
         id: make-check
         run: make check
