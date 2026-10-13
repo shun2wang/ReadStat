@@ -111,14 +111,6 @@ jobs:
       
       - uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Cache vcpkg binary cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ github.workspace }}/vcpkg-binary-cache
-          key: vcpkg-binary-cache-${{ runner.os }}-${{ hashFiles('.github/workflows/*.yml') }}
-          restore-keys: |
-            vcpkg-binary-cache-${{ runner.os }}-
-
       - name: Install dependencies
         run: |
           vcpkg install gettext libiconv libcsv libxlsxwriter zlib --triplet x64-windows
@@ -128,13 +120,24 @@ jobs:
         shell: pwsh
         run: |
           $libDir = "C:\vcpkg\installed\x64-windows\lib"
-          
+  
           if (Test-Path "$libDir\iconv.lib") {
               Copy-Item "$libDir\iconv.lib" "$libDir\libiconv.lib" -Force
           }
-          
-          if (Test-Path "$libDir\zlib.lib") {
-              Write-Host "Zlib found at vcpkg path."
+  
+          # vcpkg's zlib 1.3.2 installs as zlib1.lib/zlib1d.lib, but the
+          # projects link against zlib.lib/zlibd.lib
+          if (Test-Path "$libDir\zlib1.lib") {
+              Copy-Item "$libDir\zlib1.lib" "$libDir\zlib.lib" -Force
+          }
+          if (Test-Path "$libDir\zlib1d.lib") {
+              Copy-Item "$libDir\zlib1d.lib" "$libDir\zlibd.lib" -Force
+          }
+  
+          if (-not (Test-Path "$libDir\zlib.lib")) {
+              Write-Host "##vso[task.logissue type=error]zlib.lib not found in $libDir after fix step"
+              Get-ChildItem $libDir -Filter *.lib | Select-Object -ExpandProperty Name
+              exit 1
           }
 
       - name: Build
@@ -143,6 +146,9 @@ jobs:
      
       - name: Test
         id: make-check
+        shell: pwsh
+        env:
+          PATH: C:\vcpkg\installed\x64-windows\bin;${{ env.PATH }}
         run: |
             ./VS17/x64/Release/ReadStat_App.exe
             ./VS17/x64/Release/ReadStat_Test_double_decimals.exe
