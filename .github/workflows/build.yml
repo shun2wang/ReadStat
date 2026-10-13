@@ -131,6 +131,10 @@ jobs:
       - name: Test
         id: make-check
         run: |
+            ./VS17/x64/Release/ReadStat_App.exe
+            ./VS17/x64/Release/ReadStat_Test_double_decimals.exe
+            ./VS17/x64/Release/ReadStat_Test_dta_days.exe
+            ./VS17/x64/Release/ReadStat_Test_sav_date.exe
             ./VS17/x64/Release/ReadStat_Test_readstat.exe
         continue-on-error: true
       - name: Upload test log
