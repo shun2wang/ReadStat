@@ -61,6 +61,10 @@
     <ClInclude Include="..\..\src\bin\util\quote_and_escape.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
+    <PropertyGroup>
+      <VcpkgEnabled>true</VcpkgEnabled>
+      <VcpkgTriplet>x64-windows</VcpkgTriplet>
+    </PropertyGroup>
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{80188B4B-81A0-4113-A848-CB6483D185EA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -149,7 +153,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ReadStat.lib;libiconvD.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ReadStat.lib;libiconvD.lib;zlibd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\iconv\lib;..\x86\$(ConfigurationName);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -169,7 +173,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ReadStat.lib;libiconvD.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ReadStat.lib;libiconvD.lib;zlibd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\iconv\lib64;..\x64\$(ConfigurationName)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
