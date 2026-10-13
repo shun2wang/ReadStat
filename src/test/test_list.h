@@ -38,6 +38,31 @@ static rt_test_group_t _test_groups[] = {
     },
 
     {
+        .label = "XPORT blank rows",
+        .tests = {
+            {
+                /* V8 records the row count, so trailing all-blank rows
+                 * are data rather than end-of-file padding */
+                .label = "XPORT v8 trailing blank rows",
+                .test_formats = RT_FORMAT_XPORT_8,
+                .rows = 3,
+                .columns = {
+                    {
+                        .name = "VAR1",
+                        .type = READSTAT_TYPE_STRING,
+                        .label = "String variable",
+                        .values = {
+                            { .type = READSTAT_TYPE_STRING, .v = { .string_value = "Hello" } },
+                            { .type = READSTAT_TYPE_STRING, .v = { .string_value = "" } },
+                            { .type = READSTAT_TYPE_STRING, .v = { .string_value = "" } }
+                        }
+                    }
+                }
+            },
+        }
+    },
+
+    {
         .label = "SAV unknown row count",
         .tests = {
             {
@@ -998,6 +1023,26 @@ static rt_test_group_t _test_groups[] = {
                 }
             },
             {
+                .label = "SAS column names differ only in case",
+                .write_error = READSTAT_ERROR_DUPLICATE_VARIABLE_NAME,
+                .test_formats = RT_FORMAT_SAS,
+                .rows = 0,
+                .columns = {
+                    {
+                        .name = "name",
+                        .type = READSTAT_TYPE_STRING
+                    },
+                    {
+                        .name = "var1",
+                        .type = READSTAT_TYPE_DOUBLE
+                    },
+                    {
+                        .name = "Name",
+                        .type = READSTAT_TYPE_STRING
+                    }
+                }
+            },
+            {
                 .label = "SAS column name is too long",
                 .write_error = READSTAT_ERROR_NAME_IS_TOO_LONG,
                 .test_formats = RT_FORMAT_SAS,
@@ -1305,7 +1350,7 @@ static rt_test_group_t _test_groups[] = {
                 .columns = {
                     { .name = "VAR1", .type = READSTAT_TYPE_DOUBLE, .format = "F6.4" },
                     { .name = "VAR2", .type = READSTAT_TYPE_DOUBLE, .format = "F8.2" },
-                    { .name = "VAR3", .type = READSTAT_TYPE_STRING, .format = "A12" }
+                    { .name = "VAR3", .type = READSTAT_TYPE_STRING, .format = "A12", .user_width = 12 }
                 }
             },
             {
@@ -3848,8 +3893,43 @@ static rt_test_group_t _test_groups[] = {
                         }
                     }
                 }
+            },
+
+            {
+                .resource_name = "sav_missing_continuations.sav",
+                /* IBM SPSS Modeler omits the continuation records after an
+                 * A16 string, but the case data still holds 16 bytes (#319) */
+                .test_formats = RT_FORMAT_SAV_COMP_ROWS,
+                .label = "SPSS",
+                .rows = 2,
+                .columns_count = 3,
+                .columns = {
+                    {
+                        .name = "num1",
+                        .type = READSTAT_TYPE_DOUBLE,
+                        .values = {
+                            { .type = READSTAT_TYPE_DOUBLE, .v = { .double_value = 12.0 } },
+                            { .type = READSTAT_TYPE_DOUBLE, .v = { .double_value = 213.0 } }
+                        }
+                    },
+                    {
+                        .name = "string1",
+                        .type = READSTAT_TYPE_STRING,
+                        .values = {
+                            { .type = READSTAT_TYPE_STRING, .v = { .string_value = "randomstring1234" } },
+                            { .type = READSTAT_TYPE_STRING, .v = { .string_value = "gamma" } }
+                        }
+                    },
+                    {
+                        .name = "num2",
+                        .type = READSTAT_TYPE_DOUBLE,
+                        .values = {
+                            { .type = READSTAT_TYPE_DOUBLE, .v = { .double_value = 34.0 } },
+                            { .type = READSTAT_TYPE_DOUBLE, .v = { .double_value = 12.0 } }
+                        }
+                    }
+                }
             }
         }
     }
 };
-
