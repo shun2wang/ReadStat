@@ -61,10 +61,6 @@
     <ClInclude Include="..\..\src\bin\util\quote_and_escape.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <PropertyGroup>
-      <VcpkgEnabled>true</VcpkgEnabled>
-      <VcpkgTriplet>x64-windows</VcpkgTriplet>
-    </PropertyGroup>
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{80188B4B-81A0-4113-A848-CB6483D185EA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
