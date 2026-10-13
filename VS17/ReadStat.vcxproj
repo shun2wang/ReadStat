@@ -220,6 +220,9 @@
     <ClCompile Include="..\src\spss\readstat_sav_write.c" />
     <ClCompile Include="..\src\spss\readstat_spss.c" />
     <ClCompile Include="..\src\spss\readstat_spss_parse.c" />
+    <ClCompile Include="..\src\spss\readstat_zsav_compress.c" />
+    <ClCompile Include="..\src\spss\readstat_zsav_read.c" />
+    <ClCompile Include="..\src\spss\readstat_zsav_write.c" />
     <ClCompile Include="..\src\stata\readstat_dta.c" />
     <ClCompile Include="..\src\stata\readstat_dta_parse_timestamp.c" />
     <ClCompile Include="..\src\stata\readstat_dta_read.c" />
