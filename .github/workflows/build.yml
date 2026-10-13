@@ -130,7 +130,8 @@ jobs:
      
       - name: Test
         id: make-check
-        run: make check
+        run: |
+            ./VS17/x64/Release/ReadStat_Test_readstat.exe
         continue-on-error: true
       - name: Upload test log
         if: steps.make-check.outcome == 'failure'
