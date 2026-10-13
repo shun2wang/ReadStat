@@ -125,8 +125,15 @@ jobs:
               Copy-Item "$libDir\iconv.lib" "$libDir\libiconv.lib" -Force
           }
   
-          # vcpkg's zlib 1.3.2 installs as zlib1.lib/zlib1d.lib, but the
-          # projects link against zlib.lib/zlibd.lib
+          # Depending on the zlib port version, the import library is named
+          # z.lib, zlib1.lib or zlibd.lib/zlib1d.lib; the projects link
+          # against zlib.lib/zlibd.lib
+          if (Test-Path "$libDir\z.lib") {
+              Copy-Item "$libDir\z.lib" "$libDir\zlib.lib" -Force
+          }
+          if (Test-Path "$libDir\zd.lib") {
+              Copy-Item "$libDir\zd.lib" "$libDir\zlibd.lib" -Force
+          }
           if (Test-Path "$libDir\zlib1.lib") {
               Copy-Item "$libDir\zlib1.lib" "$libDir\zlib.lib" -Force
           }
